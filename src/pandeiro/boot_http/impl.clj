@@ -93,27 +93,31 @@
       (wrap-resource resource-root)))
 
 ;;
-;; Jetty / HTTP Kit
+;; Jetty / HTTP Kit / Aleph
 ;;
-(defn server [{:keys [port httpkit] :as opts}]
-  (if httpkit
-    (require 'org.httpkit.server)
+(defn server [{:keys [port engine] :as opts}]
+  (case engine
+    :httpkit (require 'org.httpkit.server)
+    :aleph (require 'aleph.http)
     (require 'ring.adapter.jetty))
   (let [handler (or (ring-handler opts)
                     (dir-handler opts)
                     (resources-handler opts))
-        run     (if httpkit
-                  (resolve 'org.httpkit.server/run-server)
+        wrapper (case engine
+                  :aleph handler  ; No default middleware to avoid errors on deferred values
+                  (-> handler
+                      (wrap-content-type)
+                      (wrap-not-modified)))
+        run     (case engine
+                  :httpkit (resolve 'org.httpkit.server/run-server)
+                  :aleph (resolve 'aleph.http/start-server)
                   (resolve 'ring.adapter.jetty/run-jetty))]
-    (run (-> handler
-           (wrap-content-type)
-           (wrap-not-modified))
+    (run wrapper
       {:port port :join? false})))
 
 ;;
 ;; nREPL
 ;;
-
 (defn nrepl-server [{:keys [nrepl]}]
   (require 'clojure.tools.nrepl.server)
   (let [{:keys [bind port] :or {bind "127.0.0.1"}} nrepl

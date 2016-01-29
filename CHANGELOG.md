@@ -1,3 +1,10 @@
+# 0.8.0-SNAPSHOT
+
+- Remove: :httpkit boolean option
+- Add: :server keyword option
+- Add: -S --server command line option
+- Add: Support for Aleph
+
 # 0.7.1-SNAPSHOT
 
 - Add: boot.properties file

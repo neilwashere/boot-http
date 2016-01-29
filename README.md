@@ -1,11 +1,15 @@
-# boot-http [![Build Status][badge]][build]
+# boot-http
 
+## Fork notes
+This is an experimental fork of boot-http. You probably want the real deal over at https://github.com/pandeiro/boot-http.
+
+## Description
 A simple HTTP `serve` task for use with [the boot build tool][boot]
 that can serve resources, directories or a typical ring handler.
 
 [](dependency)
 ```clojure
-[pandeiro/boot-http "0.7.1-SNAPSHOT"] ;; latest release
+[pandeiro/boot-http "0.8.0-SNAPSHOT"]
 ```
 [](/dependency)
 
@@ -97,12 +101,13 @@ Use a specific port.
 boot -d pandeiro/boot-http serve -d . -p 8888 wait
 ```
 
-#### -k / --httpkit
+#### -S / --server
 
-Use the HTTP Kit webserver instead of Jetty.
+Use a webserver other than Jetty.
+Supported values are [:httpkit](http://www.http-kit.org) or [:aleph](http://aleph.io)
 
 ```bash
-boot -d pandeiro/boot-http serve -d . -k wait  # uses httpkit
+boot -d pandeiro/boot-http serve -d . -S :aleph wait  # uses Aleph
 ```
 
 #### -n / --nrepl (Added in 0.7.0-SNAPSHOT release)
